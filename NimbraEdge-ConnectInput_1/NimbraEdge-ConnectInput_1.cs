@@ -45,14 +45,10 @@ Revision History:
 
 DATE		VERSION		AUTHOR			COMMENTS
 
-dd/mm/2023	1.0.0.1		XXX, Skyline	Initial version
+27/02/2023	1.0.0.1		XXX, Skyline	Initial version
 ****************************************************************************
 */
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
 using Skyline.DataMiner.Automation;
 
 /// <summary>
@@ -66,6 +62,12 @@ public class Script
 	/// <param name="engine">Link with SLAutomation process.</param>
 	public void Run(Engine engine)
 	{
+		var dummy = engine.GetDummy("dummy1");
+		var element = engine.FindElement(dummy.ElementName);
 
+		var input = engine.GetScriptParam("Input").Value;
+		var output = engine.GetScriptParam("Output").Value;
+
+		element.SetParameter(15059, output.Substring(2, output.Length - 4), input.Substring(2, input.Length - 4));
 	}
 }

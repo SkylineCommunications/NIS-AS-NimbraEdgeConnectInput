@@ -8,16 +8,28 @@
 	<Folder></Folder>
 
 	<Protocols>
+		<Protocol id="1">
+			<Description>dummy1</Description>
+			<Name>NetInsight Nimbra Edge</Name>
+			<Version>Production</Version>
+			<DefaultElement />
+		</Protocol>
 	</Protocols>
 
 	<Memory>
 	</Memory>
 
 	<Parameters>
+		<ScriptParameter id="11" type="string" values="">
+			<Description>Input</Description>
+		</ScriptParameter>
+		<ScriptParameter id="12" type="string" values="">
+			<Description>Output</Description>
+		</ScriptParameter>
 	</Parameters>
 
 	<Script>
-		<Exe id="1" type="csharp">
+		<Exe id="21" type="csharp">
 			<Value><![CDATA[[Project:NimbraEdge-ConnectInput_1]]]></Value>
 			<!--<Param type="debug">true</Param>-->
 			<Message></Message>
