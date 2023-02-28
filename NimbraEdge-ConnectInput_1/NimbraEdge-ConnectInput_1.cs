@@ -63,11 +63,69 @@ public class Script
 	public void Run(Engine engine)
 	{
 		var dummy = engine.GetDummy("dummy1");
+		if (!dummy.IsActive)
+		{
+			engine.ExitFail("The dummy is not active!");
+		}
+
 		var element = engine.FindElement(dummy.ElementName);
+		if (!element.IsActive)
+		{
+			engine.ExitFail("The element could not be found!");
+		}
 
+
+		//INPUTS
 		var input = engine.GetScriptParam("Input").Value;
-		var output = engine.GetScriptParam("Output").Value;
+		var setInput = ValidateParam(engine, dummy, input, 10002);
 
-		element.SetParameter(15059, output.Substring(2, output.Length - 4), input.Substring(2, input.Length - 4));
+		//OUTPUTS
+		var output = engine.GetScriptParam("Output").Value;
+		var setOutput = ValidateParam(engine, dummy, output, 15002);
+
+
+		engine.GenerateInformation("SetOutput: " + setOutput);
+		engine.GenerateInformation("SetOutput: " + setInput);
+
+		element.SetParameter(15059, SetOutput, SetInput);
+	}
+
+	/// <summary>
+	/// The ValidateParam.
+	/// </summary>
+	/// <param name="engine">The engine<see cref="Engine"/>.</param>
+	/// <param name="dummy_element">The dummy_element<see cref="ScriptDummy"/>.</param>
+	/// <param name="paramValidation">The paramValidation<see cref="string"/>.</param>
+	/// <param name="pid">The pid<see cref="int"/>.</param>
+	/// <returns>The <see cref="string"/>.</returns>
+	private string ValidateParam(Engine engine, ScriptDummy dummy_element, string paramValidation, int pid)
+	{
+		//Checking PIDs
+		var param = string.Empty;
+		if (pid == 10002)
+		{
+			param = "input";
+		}
+		else if (pid == 15002)
+		{
+			param = "output";
+		}
+		else
+		{
+			engine.ExitFail("PID introduced is not recognized. Please use either 10002 for inputs or 15002 for outputs.");
+		}
+
+
+		//Checking first characters
+		var firstCharacters = "[\"";
+		var setVal = (paramValidation.Substring(0, 2) == firstCharacters) ? paramValidation.Substring(2, paramValidation.Length - 4) : paramValidation;
+
+		//Checking if it is a valid param in the table
+		var tableValue = dummy_element.GetParameterDisplay(pid, setVal);
+		if (tableValue == null)
+		{
+			engine.ExitFail($"The {param} name is not in the {param}' Table");
+		}
+		return setVal;
 	}
 }
