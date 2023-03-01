@@ -56,6 +56,10 @@ using Skyline.DataMiner.Automation;
 /// </summary>
 public class Script
 {
+	private const int InputNamesPid = 10002;
+	private const int OutputNamesPid = 15002;
+	private const int SetInputWritePid = 15059;
+
 	/// <summary>
 	/// The Script entry point.
 	/// </summary>
@@ -63,11 +67,53 @@ public class Script
 	public void Run(Engine engine)
 	{
 		var dummy = engine.GetDummy("dummy1");
-		var element = engine.FindElement(dummy.ElementName);
+		if (!dummy.IsActive)
+		{
+			engine.ExitFail($"{dummy.ElementName} element is not active!");
+		}
 
+		// Inputs
 		var input = engine.GetScriptParam("Input").Value;
-		var output = engine.GetScriptParam("Output").Value;
+		var setInput = ValidateParam(engine, dummy, input, InputNamesPid);
 
-		element.SetParameter(15059, output.Substring(2, output.Length - 4), input.Substring(2, input.Length - 4));
+		// Outputs
+		var output = engine.GetScriptParam("Output").Value;
+		var setOutput = ValidateParam(engine, dummy, output, OutputNamesPid);
+
+		engine.GenerateInformation($"Connect input {setInput} to {setOutput} output");
+		dummy.SetParameter(SetInputWritePid, setOutput, setInput);
+	}
+
+	/// <summary>
+	/// The ValidateParam.
+	/// </summary>
+	/// <param name="engine">Link with SLAutomation process<see cref="Engine"/>.</param>
+	/// <param name="dummy_element">Link to the Nimbra Edge element<see cref="ScriptDummy"/>.</param>
+	/// <param name="paramValidation">Received name of the input or output<see cref="string"/>.</param>
+	/// <param name="pid">Parameter ID of the column with the input or output names<see cref="int"/>.</param>
+	/// <returns>The <see cref="string"/>The correct input or output name to be set</returns>
+	private static string ValidateParam(Engine engine, ScriptDummy dummy_element, string paramValidation, int pid)
+	{
+		// Checking PIDs
+		if (pid != InputNamesPid && pid != OutputNamesPid)
+		{
+			engine.ExitFail($"Invalid PID: {pid}. Please use either 10002 for inputs or 15002 for outputs.");
+		}
+
+		// Checking first characters
+		var firstCharacters = "[\"";
+		var setVal = (paramValidation.Substring(0, 2) == firstCharacters) ?
+			paramValidation.Substring(2, paramValidation.Length - 4) :
+			paramValidation;
+
+		// Checking if it is a valid param in the table
+		var tableValue = dummy_element.GetParameterDisplay(pid, setVal);
+		if (tableValue != setVal)
+		{
+			var param = pid == InputNamesPid ? "Inputs" : "Outputs";
+			engine.ExitFail($"{setVal} is not in the {param}' Table");
+		}
+
+		return setVal;
 	}
 }
