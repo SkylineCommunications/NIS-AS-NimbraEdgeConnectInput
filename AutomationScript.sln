@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.1209
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Internal", "Internal", "{CDDD0969-F8A0-4A22-B7EA-0E7521D088D1}"
 EndProject
@@ -32,8 +32,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{4DDF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NimbraEdge-ConnectInput_1", "NimbraEdge-ConnectInput_1\NimbraEdge-ConnectInput_1.csproj", "{1507D676-D29B-47C1-BC41-C9EAAEEAC7EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomationScript_ClassLibrary", "AutomationScript_ClassLibrary\AutomationScript_ClassLibrary.csproj", "{750B4B08-562D-4441-853E-E51AEAF986ED}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,10 +42,6 @@ Global
 		{1507D676-D29B-47C1-BC41-C9EAAEEAC7EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1507D676-D29B-47C1-BC41-C9EAAEEAC7EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1507D676-D29B-47C1-BC41-C9EAAEEAC7EE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{750B4B08-562D-4441-853E-E51AEAF986ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{750B4B08-562D-4441-853E-E51AEAF986ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{750B4B08-562D-4441-853E-E51AEAF986ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{750B4B08-562D-4441-853E-E51AEAF986ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,7 +51,6 @@ Global
 		{5CBF6668-5C05-46B3-81FE-ACB3F6BCDE1B} = {0D1E2BD6-2134-4963-AD4C-F6A6D94670CF}
 		{4DDFBCC3-98D0-4E2D-AA67-71AED67EFD9F} = {5CBF6668-5C05-46B3-81FE-ACB3F6BCDE1B}
 		{1507D676-D29B-47C1-BC41-C9EAAEEAC7EE} = {4DDFBCC3-98D0-4E2D-AA67-71AED67EFD9F}
-		{750B4B08-562D-4441-853E-E51AEAF986ED} = {CDDD0969-F8A0-4A22-B7EA-0E7521D088D1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C15DBF06-6716-4ED4-BDEE-9526D71EFB2D}

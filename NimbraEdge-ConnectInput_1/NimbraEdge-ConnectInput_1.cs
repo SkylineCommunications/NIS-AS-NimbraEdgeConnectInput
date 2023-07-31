@@ -124,9 +124,9 @@ public class Script
 	/// </summary>
 	/// <param name="engine">Link with SLAutomation process<see cref="Engine"/>.</param>
 	/// <param name="element">Link to the Nimbra Edge element<see cref="ScriptDummy"/>.</param>
-	/// <param name="paramValidation">Received name of the input or output<see cref="string"/>.</param>
-	/// <param name="pid">Parameter ID of the column with the input or output names<see cref="int"/>.</param>
-	/// <returns>The <see cref="string"/>The correct input or output name to be set</returns>
+	/// <param name="paramValidation">Received name of the input or output<see cref="String"/>.</param>
+	/// <param name="pid">Parameter ID of the column with the input or output names<see cref="Int32"/>.</param>
+	/// <returns>The <see cref="String"/>The correct input or output name to be set.</returns>
 	private static string ValidateParam(Engine engine, Element element, string paramValidation, int pid)
 	{
 		// Checking PIDs
