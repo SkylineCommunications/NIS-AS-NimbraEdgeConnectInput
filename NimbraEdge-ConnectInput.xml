@@ -5,15 +5,9 @@
 	<Type>Automation</Type>
 	<Author>SKYLINE2\FlavioME</Author>
 	<CheckSets>FALSE</CheckSets>
-	<Folder></Folder>
+	<Folder>NimbraOrchestration</Folder>
 
 	<Protocols>
-		<Protocol id="1">
-			<Description>dummy1</Description>
-			<Name>NetInsight Nimbra Edge</Name>
-			<Version>Production</Version>
-			<DefaultElement />
-		</Protocol>
 	</Protocols>
 
 	<Memory>
@@ -25,6 +19,9 @@
 		</ScriptParameter>
 		<ScriptParameter id="12" type="string" values="">
 			<Description>Output</Description>
+		</ScriptParameter>
+		<ScriptParameter id="13" type="string" values="">
+			<Description>ElementDmsId</Description>
 		</ScriptParameter>
 	</Parameters>
 

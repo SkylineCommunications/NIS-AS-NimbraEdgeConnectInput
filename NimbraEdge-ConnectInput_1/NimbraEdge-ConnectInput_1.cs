@@ -49,6 +49,7 @@ DATE		VERSION		AUTHOR			COMMENTS
 ****************************************************************************
 */
 
+using System;
 using Skyline.DataMiner.Automation;
 
 /// <summary>
@@ -66,33 +67,67 @@ public class Script
 	/// <param name="engine">Link with SLAutomation process.</param>
 	public void Run(Engine engine)
 	{
-		var dummy = engine.GetDummy("dummy1");
-		if (!dummy.IsActive)
+		try
 		{
-			engine.ExitFail($"{dummy.ElementName} element is not active!");
+			var elementName = engine.GetScriptParam("ElementName").Value;
+			var element = ValidateElementParam(engine, elementName);
+
+			// Inputs
+			var input = engine.GetScriptParam("Input").Value;
+			var setInput = ValidateParam(engine, element, input, InputNamesPid);
+
+			// Outputs
+			var output = engine.GetScriptParam("Output").Value;
+			var setOutput = ValidateParam(engine, element, output, OutputNamesPid);
+
+			engine.GenerateInformation($"Connect input {setInput} to {setOutput} output");
+			element.SetParameter(SetInputWritePid, setOutput, setInput);
+		}
+		catch (Exception e)
+		{
+			engine.Log($"NimbraEdge-ConnectInput [RUN]: {e}");
+			engine.GenerateInformation($"NimbraEdge-ConnectInput [RUN]: {e}");
+		}
+	}
+
+	private static string ParseParamValue(string paramValueRaw)
+	{
+		// Checking first characters
+		var firstCharacters = "[\"";
+		var paramValue = (paramValueRaw.Substring(0, 2) == firstCharacters) ?
+			paramValueRaw.Substring(2, paramValueRaw.Length - 4) :
+			paramValueRaw;
+
+		return paramValue;
+	}
+
+	private static Element ValidateElementParam(Engine engine, string paramValueRaw)
+	{
+		var paramValue = ParseParamValue(paramValueRaw);
+		var element = engine.FindElement(paramValue);
+
+		if (element == default)
+		{
+			throw new NotSupportedException($"Element not found: {paramValue}");
 		}
 
-		// Inputs
-		var input = engine.GetScriptParam("Input").Value;
-		var setInput = ValidateParam(engine, dummy, input, InputNamesPid);
+		if (!element.IsActive)
+		{
+			engine.ExitFail($"{element.ElementName} element is not active!");
+		}
 
-		// Outputs
-		var output = engine.GetScriptParam("Output").Value;
-		var setOutput = ValidateParam(engine, dummy, output, OutputNamesPid);
-
-		engine.GenerateInformation($"Connect input {setInput} to {setOutput} output");
-		dummy.SetParameter(SetInputWritePid, setOutput, setInput);
+		return element;
 	}
 
 	/// <summary>
 	/// The ValidateParam.
 	/// </summary>
 	/// <param name="engine">Link with SLAutomation process<see cref="Engine"/>.</param>
-	/// <param name="dummy_element">Link to the Nimbra Edge element<see cref="ScriptDummy"/>.</param>
+	/// <param name="element">Link to the Nimbra Edge element<see cref="ScriptDummy"/>.</param>
 	/// <param name="paramValidation">Received name of the input or output<see cref="string"/>.</param>
 	/// <param name="pid">Parameter ID of the column with the input or output names<see cref="int"/>.</param>
 	/// <returns>The <see cref="string"/>The correct input or output name to be set</returns>
-	private static string ValidateParam(Engine engine, ScriptDummy dummy_element, string paramValidation, int pid)
+	private static string ValidateParam(Engine engine, Element element, string paramValidation, int pid)
 	{
 		// Checking PIDs
 		if (pid != InputNamesPid && pid != OutputNamesPid)
@@ -100,14 +135,18 @@ public class Script
 			engine.ExitFail($"Invalid PID: {pid}. Please use either 10002 for inputs or 15002 for outputs.");
 		}
 
-		// Checking first characters
-		var firstCharacters = "[\"";
-		var setVal = (paramValidation.Substring(0, 2) == firstCharacters) ?
-			paramValidation.Substring(2, paramValidation.Length - 4) :
-			paramValidation;
+		var setVal = ParseParamValue(paramValidation);
+
+		// if it is a disconnect, the value does not exist in the table
+		if (pid == InputNamesPid &&
+			setVal == "<not connected>")
+		{
+			return setVal;
+		}
 
 		// Checking if it is a valid param in the table
-		var tableValue = dummy_element.GetParameterDisplay(pid, setVal);
+		var tableValue = element.GetParameterDisplay(pid, setVal);
+
 		if (tableValue != setVal)
 		{
 			var param = pid == InputNamesPid ? "Inputs" : "Outputs";
